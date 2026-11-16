@@ -66,8 +66,9 @@ guests.
 
 [`janorium-mcp`](https://www.npmjs.com/package/janorium-mcp) lets Claude Desktop, Claude Code, Cursor and other MCP
 clients validate, dry-run and backtest strategies on Janorium under your own free API key, so an assistant answers
-with numbers from a real backtest. It is on npm and in the MCP Registry as `com.janorium/mcp`;
-[mcp/README.md](mcp/README.md) has the setup.
+with numbers from a real backtest. It is on npm and in the MCP Registry as `com.janorium/mcp`.
+[mcp/](mcp) holds its source, tests and the four references it serves; the npm package is built from that directory,
+and [mcp/README.md](mcp/README.md) has the setup.
 
 ## How the backtests work
 
@@ -94,5 +95,5 @@ Found a mistake in an example, or want one added? Open an issue.
 
 ## License
 
-The configs and documentation in this repository are released under the [MIT License](LICENSE). The Janorium
-platform itself is not open source.
+The configs, the documentation and the MCP server in this repository are released under the [MIT License](LICENSE).
+The Janorium platform itself is not open source.

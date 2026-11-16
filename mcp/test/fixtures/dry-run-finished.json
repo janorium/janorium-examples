@@ -1,0 +1,44 @@
+{
+  "dryRunId": "7f2b9c1e-3a44-4d8e-9f51-0c6b2d7e8a13",
+  "marketType": "futures",
+  "durationMs": 1840,
+  "summary": {
+    "totalReturnPct": 11.204,
+    "totalPnl": 1120.4,
+    "winRatePct": 48.1,
+    "maxDrawdownPct": 10.92,
+    "tradesCount": 79,
+    "expectancy": 14.18,
+    "avgWinPnl": 120.2,
+    "avgLossPnl": -84.3,
+    "totalFundingPaid": -38.1,
+    "liquidationsCount": 0,
+    "maxLeverageUsed": 3.0,
+    "sharpeRatio": 0.9921,
+    "profitFactor": 1.31
+  },
+  "breakdown": {
+    "TAKE_PROFIT": { "count": 27, "pct": 34.18, "avgProfit": 126.1 },
+    "STOP_LOSS": { "count": 40, "pct": 50.63, "avgProfit": -58.2 },
+    "LIQUIDATION": { "count": 0, "pct": 0, "avgProfit": 0 },
+    "SIGNAL": { "count": 12, "pct": 15.19, "avgProfit": 14.4 },
+    "SL_BREAK_EVEN": { "count": 0, "pct": 0, "avgProfit": 0 },
+    "TIME": { "count": 0, "pct": 0, "avgProfit": 0 },
+    "FLAT": { "count": 0, "pct": 0, "avgProfit": 0 },
+    "RISK_GUARD": { "count": 0, "pct": 0, "avgProfit": 0 }
+  },
+  "longProfit": { "takeProfit": 2100.3, "stopLoss": -1400.1, "signal": 98.2, "liquidation": 0, "total": 798.4 },
+  "shortProfit": { "takeProfit": 1304.4, "stopLoss": -928.9, "signal": 74.5, "liquidation": 0, "total": 322.0 },
+  "randomizedEntry": {
+    "runs": 50,
+    "seed": 42,
+    "percentileRank": 84,
+    "actualReturnPct": 11.204,
+    "actualMaxDrawdownPct": 10.92,
+    "actualTradesCount": 79,
+    "randomReturnPct": { "p5": -18.2, "p25": -7.4, "p50": -1.1, "p75": 5.2, "p95": 14.9 },
+    "randomMaxDrawdownPct": { "p5": 6.1, "p25": 9.8, "p50": 13.2, "p75": 17.9, "p95": 25.4 },
+    "medianRandomTradesCount": 77,
+    "caveats": []
+  }
+}

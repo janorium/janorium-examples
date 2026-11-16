@@ -1,0 +1,52 @@
+{
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+  "name": "com.janorium/mcp",
+  "title": "Janorium",
+  "description": "Backtest crypto trading strategies on Binance spot and futures history with Janorium (free).",
+  "websiteUrl": "https://janorium.com",
+  "repository": {
+    "url": "https://github.com/janorium/janorium-examples",
+    "source": "github",
+    "subfolder": "mcp"
+  },
+  "version": "0.1.1",
+  "packages": [
+    {
+      "registryType": "npm",
+      "registryBaseUrl": "https://registry.npmjs.org",
+      "identifier": "janorium-mcp",
+      "version": "0.1.1",
+      "runtimeHint": "npx",
+      "transport": {
+        "type": "stdio"
+      },
+      "environmentVariables": [
+        {
+          "name": "CB_API_KEY",
+          "description": "Your Janorium API key (cbk_…): janorium.com → Settings → API keys. Scopes read + run; optimize, research, publish only if needed.",
+          "isRequired": true,
+          "isSecret": true,
+          "format": "string",
+          "placeholder": "cbk_..."
+        },
+        {
+          "name": "CB_BASE_URL",
+          "description": "Janorium REST API base URL. Leave unset for the public platform.",
+          "isRequired": false,
+          "isSecret": false,
+          "format": "string",
+          "default": "https://janorium.com/api/v1"
+        },
+        {
+          "name": "MCP_REQUIRE_CAMPAIGN",
+          "description": "true: refuse every run outside a campaign with a locked holdout (guards a strategy search against overfitting). false: one-off runs need no campaign.",
+          "isRequired": false,
+          "isSecret": false,
+          "format": "boolean",
+          "default": "false",
+          "choices": ["true", "false"]
+        }
+      ]
+    }
+  ]
+}

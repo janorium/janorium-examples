@@ -1,0 +1,70 @@
+{
+  "name": "janorium-mcp",
+  "version": "0.1.1",
+  "description": "MCP server for Janorium, the free crypto backtesting platform: let Claude, Cursor or any MCP client validate, dry-run and backtest trading strategies on Binance spot and USDT-M futures history under your own API key.",
+  "keywords": [
+    "mcp",
+    "mcp-server",
+    "model-context-protocol",
+    "backtesting",
+    "backtest",
+    "crypto",
+    "trading-strategy",
+    "binance",
+    "claude",
+    "cursor",
+    "janorium"
+  ],
+  "homepage": "https://janorium.com",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/janorium/janorium-examples.git",
+    "directory": "mcp"
+  },
+  "bugs": {
+    "url": "https://github.com/janorium/janorium-examples/issues"
+  },
+  "license": "MIT",
+  "author": "Janorium (https://janorium.com)",
+  "mcpName": "com.janorium/mcp",
+  "bin": {
+    "janorium-mcp": "dist/index.js"
+  },
+  "files": [
+    "dist/index.js",
+    "dist/docs/*.md"
+  ],
+  "engines": {
+    "node": ">=20.9"
+  },
+  "scripts": {
+    "build": "tsup",
+    "start": "node dist/index.js",
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint \"{src,test}/**/*.ts\" --fix",
+    "test": "jest",
+    "clean": "rimraf dist",
+    "prepack": "npm run build && node scripts/verify-dist.mjs"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.31.0",
+    "socket.io-client": "^4.8.3",
+    "zod": "^4.4.3"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.9.0",
+    "@types/jest": "^29.5.12",
+    "@types/node": "^20.14.0",
+    "eslint": "^9.9.0",
+    "eslint-config-prettier": "^9.1.0",
+    "eslint-plugin-prettier": "^5.2.1",
+    "globals": "^15.9.0",
+    "jest": "^29.7.0",
+    "prettier": "^3.3.3",
+    "rimraf": "^6.0.1",
+    "ts-jest": "^29.2.4",
+    "tsup": "^8.5.1",
+    "typescript": "^5.5.4",
+    "typescript-eslint": "^8.0.0"
+  }
+}

@@ -1,0 +1,222 @@
+{
+  "description": "Deflated Sharpe parity fixture. Asserted to 1e-9 by src/campaign/deflated-sharpe.spec.ts and by the platform's own test suite. Regenerate only together with both implementations.",
+  "tolerance": 1e-9,
+  "deflatedSharpe": [
+    {
+      "sharpe": 1.4,
+      "dailyReturns": 365,
+      "skew": 0,
+      "excessKurtosis": 0,
+      "trials": 2,
+      "expected": 0.809797083621748
+    },
+    {
+      "sharpe": 1.4,
+      "dailyReturns": 365,
+      "skew": 0,
+      "excessKurtosis": 0,
+      "trials": 524,
+      "expected": 0.04782906266199858
+    },
+    {
+      "sharpe": 1.4,
+      "dailyReturns": 90,
+      "skew": 0,
+      "excessKurtosis": 0,
+      "trials": 524,
+      "expected": 0.008843756017644982
+    },
+    {
+      "sharpe": 1.4,
+      "dailyReturns": 900,
+      "skew": 0,
+      "excessKurtosis": 0,
+      "trials": 524,
+      "expected": 0.1926231893400418
+    },
+    {
+      "sharpe": 4,
+      "dailyReturns": 365,
+      "skew": -1.5,
+      "excessKurtosis": 0,
+      "trials": 100,
+      "expected": 0.8973390052277319
+    },
+    {
+      "sharpe": 4,
+      "dailyReturns": 365,
+      "skew": 0,
+      "excessKurtosis": 6,
+      "trials": 100,
+      "expected": 0.9197922457799735
+    },
+    {
+      "sharpe": 1.4,
+      "dailyReturns": 365,
+      "skew": 0,
+      "excessKurtosis": 0,
+      "trials": 100,
+      "expected": 0.1290265567193749
+    },
+    {
+      "sharpe": 1.4,
+      "dailyReturns": 365,
+      "skew": -1.5,
+      "excessKurtosis": 0,
+      "trials": 100,
+      "expected": 0.14148223803366936
+    },
+    {
+      "sharpe": 2.1,
+      "dailyReturns": 1095,
+      "skew": -0.3,
+      "excessKurtosis": 4.2,
+      "trials": 30,
+      "expected": 0.9361666680251114
+    },
+    {
+      "sharpe": 0.8,
+      "dailyReturns": 540,
+      "skew": 0.4,
+      "excessKurtosis": 1.1,
+      "trials": 7,
+      "expected": 0.3380313434132734
+    },
+    {
+      "sharpe": -0.5,
+      "dailyReturns": 700,
+      "skew": 0.1,
+      "excessKurtosis": 2,
+      "trials": 12,
+      "expected": 0.009314824446522972
+    },
+    {
+      "sharpe": 3.2,
+      "dailyReturns": 250,
+      "skew": -0.8,
+      "excessKurtosis": 9.5,
+      "trials": 31,
+      "expected": 0.6930909852281402
+    },
+    {
+      "sharpe": 1.4,
+      "dailyReturns": 3,
+      "skew": 0,
+      "excessKurtosis": 0,
+      "trials": 100,
+      "expected": null
+    },
+    {
+      "sharpe": 1.4,
+      "dailyReturns": 365,
+      "skew": 0,
+      "excessKurtosis": 0,
+      "trials": 1,
+      "expected": null
+    }
+  ],
+  "expectedMaximum": [
+    {
+      "trials": 2,
+      "variance": 0.0027472527472527475,
+      "expected": 0.02724258231072632
+    },
+    {
+      "trials": 50,
+      "variance": 0.0027472527472527475,
+      "expected": 0.11931070083078728
+    },
+    {
+      "trials": 524,
+      "variance": 0.0027472527472527475,
+      "expected": 0.1607331970059963
+    },
+    {
+      "trials": 30,
+      "variance": 0.0021,
+      "expected": 0.0950147719651982
+    }
+  ],
+  "inverseNormalCdf": [
+    {
+      "p": 0.001,
+      "expected": -3.090232306167814
+    },
+    {
+      "p": 0.02,
+      "expected": -2.0537489106318225
+    },
+    {
+      "p": 0.3,
+      "expected": -0.5244005127080419
+    },
+    {
+      "p": 0.5,
+      "expected": -1.9480414972702365e-15
+    },
+    {
+      "p": 0.84,
+      "expected": 0.994457883209754
+    },
+    {
+      "p": 0.975,
+      "expected": 1.9599639845400538
+    },
+    {
+      "p": 0.999,
+      "expected": 3.0902323061678225
+    },
+    {
+      "p": 0.9976851851851852,
+      "expected": 2.8317343342180803
+    }
+  ],
+  "normalCdf": [
+    {
+      "x": -2.5758293035,
+      "expected": 0.0050000000007071
+    },
+    {
+      "x": 0,
+      "expected": 0.5000000000000008
+    },
+    {
+      "x": 1,
+      "expected": 0.8413447460685427
+    },
+    {
+      "x": 1.959963985,
+      "expected": 0.9750000000268816
+    },
+    {
+      "x": 3.2,
+      "expected": 0.9993128620620841
+    }
+  ],
+  "probabilisticSharpe": [
+    {
+      "sharpe": 0.05,
+      "benchmark": 0,
+      "n": 250,
+      "skew": 0,
+      "excessKurtosis": 0,
+      "expected": 0.7847961074359661
+    },
+    {
+      "sharpe": 0.5,
+      "benchmark": 0,
+      "n": 100,
+      "skew": 10,
+      "excessKurtosis": -3,
+      "expected": null
+    },
+    {
+      "sharpe": 0.09,
+      "benchmark": 0.04,
+      "n": 800,
+      "skew": -0.6,
+      "excessKurtosis": 3.3,
+      "expected": 0.9146085745645911
+    }
+  ]
+}
