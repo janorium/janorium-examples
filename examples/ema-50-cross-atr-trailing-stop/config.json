@@ -1,0 +1,77 @@
+{
+  "name": "EMA 50 cross, 4h — 3x ATR trailing stop (stop-loss study)",
+  "version": 1,
+  "market": {
+    "type": "spot",
+    "exchange": "binance"
+  },
+  "instrument": {
+    "symbol": "BTCUSDT",
+    "timeframe": "4h"
+  },
+  "sides": [
+    "LONG"
+  ],
+  "risk": {
+    "maxOpenPositions": 1,
+    "feesPct": 0.1,
+    "slippagePct": 0.05
+  },
+  "entries": [
+    {
+      "id": "ema50-cross-up",
+      "side": "LONG",
+      "sizePct": 95,
+      "reArmOn": "ALL_LAYERS_CLOSED",
+      "conditions": {
+        "operator": "AND",
+        "list": [
+          {
+            "left": {
+              "indicator": "CLOSE"
+            },
+            "op": "CROSS_UP",
+            "right": {
+              "indicator": "EMA",
+              "params": {
+                "period": 50
+              }
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "exit": {
+    "scope": "PER_POSITION",
+    "atrRef": {
+      "indicator": "ATR",
+      "params": {
+        "period": 14
+      }
+    },
+    "trailingStop": {
+      "atrMult": 3
+    },
+    "signal": {
+      "operator": "AND",
+      "list": [
+        {
+          "left": {
+            "indicator": "CLOSE"
+          },
+          "op": "LT",
+          "right": {
+            "indicator": "EMA",
+            "params": {
+              "period": 50
+            }
+          }
+        }
+      ]
+    }
+  },
+  "execution": {
+    "fillAt": "NEXT_OPEN"
+  }
+}

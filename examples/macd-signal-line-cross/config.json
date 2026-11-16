@@ -1,0 +1,86 @@
+{
+  "name": "MACD 12/26/9 signal-line cross — article study",
+  "version": 1,
+  "market": {
+    "type": "spot",
+    "exchange": "binance"
+  },
+  "instrument": {
+    "symbol": "BTCUSDT",
+    "timeframe": "1d"
+  },
+  "sides": [
+    "LONG"
+  ],
+  "risk": {
+    "maxOpenPositions": 1,
+    "feesPct": 0.1,
+    "slippagePct": 0.05
+  },
+  "entries": [
+    {
+      "id": "long",
+      "side": "LONG",
+      "sizePct": 95,
+      "reArmOn": "ALL_LAYERS_CLOSED",
+      "conditions": {
+        "operator": "AND",
+        "list": [
+          {
+            "left": {
+              "indicator": "MACD",
+              "field": "macd",
+              "params": {
+                "signal": 9,
+                "fast": 12,
+                "slow": 26
+              }
+            },
+            "op": "CROSS_UP",
+            "right": {
+              "indicator": "MACD",
+              "field": "signal",
+              "params": {
+                "signal": 9,
+                "fast": 12,
+                "slow": 26
+              }
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "exit": {
+    "scope": "PER_POSITION",
+    "signal": {
+      "operator": "AND",
+      "list": [
+        {
+          "left": {
+            "indicator": "MACD",
+            "field": "macd",
+            "params": {
+              "signal": 9,
+              "fast": 12,
+              "slow": 26
+            }
+          },
+          "op": "CROSS_DOWN",
+          "right": {
+            "indicator": "MACD",
+            "field": "signal",
+            "params": {
+              "signal": 9,
+              "fast": 12,
+              "slow": 26
+            }
+          }
+        }
+      ]
+    }
+  },
+  "execution": {
+    "fillAt": "NEXT_OPEN"
+  }
+}

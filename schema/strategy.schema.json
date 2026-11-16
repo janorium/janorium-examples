@@ -1,0 +1,2566 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://raw.githubusercontent.com/janorium/janorium-examples/main/schema/strategy.schema.json",
+  "title": "Janorium strategy config",
+  "description": "The structure of a Janorium strategy config (JSON Schema draft-07). Janorium also checks cross-field rules this schema cannot express; the full reference is https://janorium.com/ai/strategy-config-reference.md",
+  "type": "object",
+  "required": [
+    "name",
+    "market",
+    "instrument",
+    "sides",
+    "risk"
+  ],
+  "properties": {
+    "name": {
+      "type": "string",
+      "minLength": 1
+    },
+    "version": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "market": {
+      "type": "object",
+      "required": [
+        "type",
+        "exchange"
+      ],
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": [
+            "spot",
+            "futures"
+          ]
+        },
+        "exchange": {
+          "type": "string",
+          "minLength": 1
+        },
+        "futures": {
+          "type": "object",
+          "required": [
+            "contractType",
+            "leverage",
+            "marginMode"
+          ],
+          "properties": {
+            "contractType": {
+              "type": "string",
+              "enum": [
+                "USDT_M_PERP"
+              ]
+            },
+            "leverage": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 125
+            },
+            "marginMode": {
+              "type": "string",
+              "enum": [
+                "ISOLATED",
+                "CROSS"
+              ]
+            },
+            "applyFunding": {
+              "type": "boolean"
+            }
+          }
+        }
+      },
+      "if": {
+        "properties": {
+          "type": {
+            "const": "futures"
+          }
+        }
+      },
+      "then": {
+        "required": [
+          "type",
+          "exchange",
+          "futures"
+        ]
+      }
+    },
+    "instrument": {
+      "type": "object",
+      "required": [
+        "symbol",
+        "timeframe"
+      ],
+      "properties": {
+        "symbol": {
+          "type": "string",
+          "minLength": 1
+        },
+        "timeframe": {
+          "type": "string",
+          "enum": [
+            "1m",
+            "5m",
+            "15m",
+            "1h",
+            "4h",
+            "1d"
+          ]
+        }
+      }
+    },
+    "sides": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string",
+        "enum": [
+          "LONG",
+          "SHORT"
+        ]
+      }
+    },
+    "risk": {
+      "type": "object",
+      "properties": {
+        "maxOpenPositions": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "maxOpenPositionsPerSide": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "positionSizePct": {
+          "type": "number",
+          "exclusiveMinimum": 0,
+          "maximum": 100
+        },
+        "positionSizeAbs": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        },
+        "feesPct": {
+          "type": "number",
+          "minimum": 0
+        },
+        "slippagePct": {
+          "type": "number",
+          "minimum": 0
+        },
+        "fees": {
+          "type": "object",
+          "minProperties": 1,
+          "additionalProperties": false,
+          "properties": {
+            "makerPct": {
+              "type": "number",
+              "minimum": 0
+            },
+            "takerPct": {
+              "type": "number",
+              "minimum": 0
+            }
+          }
+        },
+        "slippage": {
+          "type": "object",
+          "required": [
+            "model"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "model": {
+              "type": "string",
+              "enum": [
+                "CONSTANT",
+                "ATR_FRACTION",
+                "VOLUME_IMPACT"
+              ]
+            },
+            "basePct": {
+              "type": "number",
+              "minimum": 0
+            },
+            "k": {
+              "type": "number",
+              "exclusiveMinimum": 0
+            },
+            "impact": {
+              "type": "number",
+              "exclusiveMinimum": 0
+            },
+            "atrRef": {
+              "$ref": "#/definitions/atrRef"
+            }
+          },
+          "allOf": [
+            {
+              "if": {
+                "properties": {
+                  "model": {
+                    "const": "ATR_FRACTION"
+                  }
+                },
+                "required": [
+                  "model"
+                ]
+              },
+              "then": {
+                "required": [
+                  "k",
+                  "atrRef"
+                ]
+              }
+            },
+            {
+              "if": {
+                "properties": {
+                  "model": {
+                    "const": "VOLUME_IMPACT"
+                  }
+                },
+                "required": [
+                  "model"
+                ]
+              },
+              "then": {
+                "required": [
+                  "impact"
+                ]
+              }
+            }
+          ]
+        },
+        "maxVolumeParticipationPct": {
+          "type": "number",
+          "exclusiveMinimum": 0,
+          "maximum": 100
+        },
+        "onExcess": {
+          "type": "string",
+          "enum": [
+            "CLIP",
+            "SKIP"
+          ]
+        },
+        "liquidationBuffer": {
+          "type": "number",
+          "minimum": 0
+        },
+        "maxDailyLossPct": {
+          "type": "number",
+          "exclusiveMinimum": 0,
+          "maximum": 100
+        },
+        "maxDrawdownPct": {
+          "type": "number",
+          "exclusiveMinimum": 0,
+          "maximum": 100
+        },
+        "maxDailyProfitPct": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        },
+        "dailyTrailingDrawdownPct": {
+          "type": "number",
+          "exclusiveMinimum": 0,
+          "maximum": 100
+        },
+        "maxConsecutiveLosses": {
+          "type": "object",
+          "required": [
+            "count",
+            "pauseBars"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "count": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "pauseBars": {
+              "type": "integer",
+              "minimum": 0
+            }
+          }
+        },
+        "maxTradesPerDay": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "equityCurveFilter": {
+          "type": "object",
+          "required": [
+            "smaBars"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "smaBars": {
+              "type": "integer",
+              "minimum": 1
+            }
+          }
+        },
+        "fundingFilter": {
+          "type": "object",
+          "required": [
+            "maxAbsRatePct"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "maxAbsRatePct": {
+              "type": "number",
+              "exclusiveMinimum": 0
+            }
+          }
+        }
+      },
+      "allOf": [
+        {
+          "not": {
+            "required": [
+              "feesPct",
+              "fees"
+            ]
+          }
+        },
+        {
+          "not": {
+            "required": [
+              "slippagePct",
+              "slippage"
+            ]
+          }
+        }
+      ]
+    },
+    "entries": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "side"
+        ],
+        "dependencies": {
+          "setup": [
+            "trigger",
+            "armedForBars"
+          ],
+          "invalidate": [
+            "setup"
+          ],
+          "armedForBars": [
+            "setup"
+          ],
+          "allowSameBar": [
+            "setup"
+          ],
+          "setupCooldownBars": [
+            "setup"
+          ],
+          "anchors": [
+            "setup"
+          ],
+          "reArmStepRef": [
+            "reArmStepPct"
+          ]
+        },
+        "allOf": [
+          {
+            "oneOf": [
+              {
+                "required": [
+                  "conditions"
+                ]
+              },
+              {
+                "required": [
+                  "trigger"
+                ]
+              }
+            ]
+          }
+        ],
+        "properties": {
+          "setup": {
+            "$ref": "#/definitions/conditionNode"
+          },
+          "trigger": {
+            "$ref": "#/definitions/conditionNode"
+          },
+          "invalidate": {
+            "$ref": "#/definitions/conditionNode"
+          },
+          "armedForBars": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 500
+          },
+          "allowSameBar": {
+            "type": "boolean",
+            "default": false
+          },
+          "setupCooldownBars": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 500,
+            "default": 0
+          },
+          "anchors": {
+            "type": "array",
+            "maxItems": 8,
+            "items": {
+              "$ref": "#/definitions/indicatorRef"
+            }
+          },
+          "entryOrder": {
+            "$ref": "#/definitions/entryOrder"
+          },
+          "id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "side": {
+            "type": "string",
+            "enum": [
+              "LONG",
+              "SHORT"
+            ]
+          },
+          "sizePct": {
+            "type": "number",
+            "exclusiveMinimum": 0,
+            "maximum": 100
+          },
+          "sizeAbs": {
+            "type": "number",
+            "exclusiveMinimum": 0
+          },
+          "sizing": {
+            "$ref": "#/definitions/sizing"
+          },
+          "cooldownBars": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "reArmOn": {
+            "type": "string",
+            "enum": [
+              "ALL_LAYERS_CLOSED",
+              "THIS_LAYER_CLOSED",
+              "ALWAYS"
+            ]
+          },
+          "reArmStepPct": {
+            "type": "number",
+            "exclusiveMinimum": 0,
+            "exclusiveMaximum": 100
+          },
+          "reArmStepRef": {
+            "type": "string",
+            "enum": [
+              "LAST_FILL",
+              "AVG_ENTRY"
+            ],
+            "default": "LAST_FILL"
+          },
+          "conditions": {
+            "$ref": "#/definitions/conditionGroup"
+          },
+          "exit": {
+            "type": "object",
+            "properties": {
+              "takeProfitPct": {
+                "type": "number",
+                "exclusiveMinimum": 0
+              },
+              "takeProfitR": {
+                "$ref": "#/definitions/rMult"
+              },
+              "stopLossPct": {
+                "type": "number",
+                "exclusiveMinimum": 0
+              },
+              "takeProfitAtrMult": {
+                "$ref": "#/definitions/atrMult"
+              },
+              "stopLossAtrMult": {
+                "$ref": "#/definitions/atrMult"
+              },
+              "partialSignals": {
+                "$ref": "#/definitions/partialSignals"
+              },
+              "stopLosses": {
+                "$ref": "#/definitions/stopLosses"
+              },
+              "stopLossRef": {
+                "$ref": "#/definitions/stopLossRef"
+              },
+              "stopLossRefAtrBuffer": {
+                "$ref": "#/definitions/stopLossRefAtrBuffer"
+              },
+              "takeProfitRef": {
+                "$ref": "#/definitions/takeProfitRef"
+              },
+              "takeProfitRefAtrBuffer": {
+                "$ref": "#/definitions/takeProfitRefAtrBuffer"
+              },
+              "takeProfitRefDynamic": {
+                "$ref": "#/definitions/takeProfitRefDynamic"
+              },
+              "atrRef": {
+                "$ref": "#/definitions/atrRef"
+              },
+              "takeProfits": {
+                "$ref": "#/definitions/takeProfits"
+              },
+              "breakEven": {
+                "$ref": "#/definitions/breakEven"
+              },
+              "trailingStop": {
+                "$ref": "#/definitions/trailingStop"
+              },
+              "maxHoldingBars": {
+                "$ref": "#/definitions/maxHoldingBars"
+              },
+              "timeStop": {
+                "$ref": "#/definitions/timeStop"
+              },
+              "flatAtHourUtc": {
+                "$ref": "#/definitions/flatAtHourUtc"
+              },
+              "flatBeforeFunding": {
+                "$ref": "#/definitions/flatBeforeFunding"
+              },
+              "signal": {
+                "$ref": "#/definitions/conditionGroup"
+              }
+            },
+            "anyOf": [
+              {
+                "required": [
+                  "takeProfitPct"
+                ]
+              },
+              {
+                "required": [
+                  "takeProfitR"
+                ]
+              },
+              {
+                "required": [
+                  "takeProfitRef"
+                ]
+              },
+              {
+                "required": [
+                  "stopLossPct"
+                ]
+              },
+              {
+                "required": [
+                  "takeProfitAtrMult"
+                ]
+              },
+              {
+                "required": [
+                  "partialSignals"
+                ]
+              },
+              {
+                "required": [
+                  "stopLossAtrMult"
+                ]
+              },
+              {
+                "required": [
+                  "stopLosses"
+                ]
+              },
+              {
+                "required": [
+                  "takeProfits"
+                ]
+              },
+              {
+                "required": [
+                  "trailingStop"
+                ]
+              },
+              {
+                "required": [
+                  "stopLossRef"
+                ]
+              },
+              {
+                "required": [
+                  "maxHoldingBars"
+                ]
+              },
+              {
+                "required": [
+                  "timeStop"
+                ]
+              },
+              {
+                "required": [
+                  "flatAtHourUtc"
+                ]
+              },
+              {
+                "required": [
+                  "flatBeforeFunding"
+                ]
+              },
+              {
+                "required": [
+                  "signal"
+                ]
+              }
+            ],
+            "allOf": [
+              {
+                "$ref": "#/definitions/exitUnitExclusivity"
+              }
+            ]
+          }
+        },
+        "oneOf": [
+          {
+            "required": [
+              "sizePct"
+            ]
+          },
+          {
+            "required": [
+              "sizeAbs"
+            ]
+          },
+          {
+            "required": [
+              "sizing"
+            ]
+          }
+        ]
+      }
+    },
+    "entry": {
+      "type": "object",
+      "minProperties": 1,
+      "properties": {
+        "long": {
+          "$ref": "#/definitions/conditionGroup"
+        },
+        "short": {
+          "$ref": "#/definitions/conditionGroup"
+        }
+      }
+    },
+    "exit": {
+      "type": "object",
+      "properties": {
+        "scope": {
+          "type": "string",
+          "enum": [
+            "PER_POSITION",
+            "AGGREGATE"
+          ]
+        },
+        "partialSignals": {
+          "$ref": "#/definitions/partialSignals"
+        },
+        "takeProfitPct": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        },
+        "takeProfitR": {
+          "$ref": "#/definitions/rMult"
+        },
+        "stopLosses": {
+          "$ref": "#/definitions/stopLosses"
+        },
+        "stopLossPct": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        },
+        "takeProfitAtrMult": {
+          "$ref": "#/definitions/atrMult"
+        },
+        "stopLossAtrMult": {
+          "$ref": "#/definitions/atrMult"
+        },
+        "stopLossRef": {
+          "$ref": "#/definitions/stopLossRef"
+        },
+        "stopLossRefAtrBuffer": {
+          "$ref": "#/definitions/stopLossRefAtrBuffer"
+        },
+        "takeProfitRef": {
+          "$ref": "#/definitions/takeProfitRef"
+        },
+        "takeProfitRefAtrBuffer": {
+          "$ref": "#/definitions/takeProfitRefAtrBuffer"
+        },
+        "takeProfitRefDynamic": {
+          "$ref": "#/definitions/takeProfitRefDynamic"
+        },
+        "atrRef": {
+          "$ref": "#/definitions/atrRef"
+        },
+        "takeProfits": {
+          "$ref": "#/definitions/takeProfits"
+        },
+        "breakEven": {
+          "$ref": "#/definitions/breakEven"
+        },
+        "trailingStop": {
+          "$ref": "#/definitions/trailingStop"
+        },
+        "trailingTakeProfit": {
+          "$ref": "#/definitions/trailingTakeProfit"
+        },
+        "maxHoldingBars": {
+          "$ref": "#/definitions/maxHoldingBars"
+        },
+        "timeStop": {
+          "$ref": "#/definitions/timeStop"
+        },
+        "flatAtHourUtc": {
+          "$ref": "#/definitions/flatAtHourUtc"
+        },
+        "flatBeforeFunding": {
+          "$ref": "#/definitions/flatBeforeFunding"
+        },
+        "signal": {
+          "$ref": "#/definitions/conditionGroup"
+        }
+      },
+      "allOf": [
+        {
+          "$ref": "#/definitions/exitUnitExclusivity"
+        }
+      ]
+    },
+    "execution": {
+      "$ref": "#/definitions/execution"
+    },
+    "dca": {
+      "$ref": "#/definitions/dca"
+    },
+    "pyramiding": {
+      "$ref": "#/definitions/pyramiding"
+    },
+    "defs": {
+      "type": "object",
+      "additionalProperties": {
+        "$ref": "#/definitions/conditionGroup"
+      },
+      "propertyNames": {
+        "pattern": "^[A-Za-z0-9_-]{1,32}$"
+      }
+    },
+    "params": {
+      "type": "object",
+      "maxProperties": 32,
+      "additionalProperties": {
+        "type": "number"
+      },
+      "propertyNames": {
+        "pattern": "^[A-Za-z][A-Za-z0-9_]{0,31}$"
+      }
+    },
+    "series": {
+      "type": "object",
+      "maxProperties": 16,
+      "additionalProperties": {
+        "$ref": "#/definitions/seriesDef"
+      },
+      "propertyNames": {
+        "pattern": "^[A-Za-z][A-Za-z0-9_]{0,31}$"
+      }
+    }
+  },
+  "oneOf": [
+    {
+      "required": [
+        "entries",
+        "exit"
+      ],
+      "not": {
+        "required": [
+          "dca"
+        ]
+      }
+    },
+    {
+      "required": [
+        "entry",
+        "exit"
+      ],
+      "not": {
+        "required": [
+          "dca"
+        ]
+      }
+    },
+    {
+      "required": [
+        "dca"
+      ],
+      "allOf": [
+        {
+          "not": {
+            "required": [
+              "exit"
+            ]
+          }
+        },
+        {
+          "not": {
+            "required": [
+              "entries"
+            ]
+          }
+        },
+        {
+          "not": {
+            "required": [
+              "entry"
+            ]
+          }
+        }
+      ]
+    }
+  ],
+  "definitions": {
+    "execution": {
+      "type": "object",
+      "anyOf": [
+        {
+          "required": [
+            "fillAt"
+          ]
+        },
+        {
+          "required": [
+            "intrabar"
+          ]
+        }
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "intrabar": {
+          "type": "object",
+          "required": [
+            "source"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "source": {
+              "type": "string",
+              "enum": [
+                "1m",
+                "5m"
+              ]
+            }
+          }
+        },
+        "fillAt": {
+          "type": "string",
+          "enum": [
+            "CLOSE",
+            "NEXT_OPEN"
+          ]
+        }
+      }
+    },
+    "maxHoldingBars": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "timeStop": {
+      "type": "object",
+      "required": [
+        "afterBars"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "afterBars": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "ifNotInProfit": {
+          "type": "boolean"
+        }
+      }
+    },
+    "flatAtHourUtc": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 23
+    },
+    "flatBeforeFunding": {
+      "type": "boolean"
+    },
+    "dca": {
+      "type": "object",
+      "required": [
+        "side",
+        "start",
+        "baseOrder",
+        "safetyOrders",
+        "takeProfit"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "side": {
+          "type": "string",
+          "enum": [
+            "LONG",
+            "SHORT"
+          ]
+        },
+        "start": {
+          "$ref": "#/definitions/conditionGroup"
+        },
+        "baseOrder": {
+          "type": "object",
+          "required": [
+            "sizeAbs"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "sizeAbs": {
+              "type": "number",
+              "exclusiveMinimum": 0
+            }
+          }
+        },
+        "safetyOrders": {
+          "type": "object",
+          "required": [
+            "maxCount",
+            "sizeAbs",
+            "stepPct"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "maxCount": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 25
+            },
+            "sizeAbs": {
+              "type": "number",
+              "exclusiveMinimum": 0
+            },
+            "volumeScale": {
+              "type": "number",
+              "exclusiveMinimum": 0,
+              "default": 1
+            },
+            "stepPct": {
+              "type": "number",
+              "exclusiveMinimum": 0
+            },
+            "stepScale": {
+              "type": "number",
+              "exclusiveMinimum": 0,
+              "default": 1
+            },
+            "priceRef": {
+              "type": "string",
+              "enum": [
+                "AVG_ENTRY",
+                "LAST_FILL"
+              ],
+              "default": "AVG_ENTRY"
+            }
+          }
+        },
+        "takeProfit": {
+          "type": "object",
+          "required": [
+            "fromAvgPct"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "fromAvgPct": {
+              "type": "number",
+              "exclusiveMinimum": 0
+            }
+          }
+        },
+        "stopLoss": {
+          "type": "object",
+          "required": [
+            "fromAvgPct"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "fromAvgPct": {
+              "type": "number",
+              "exclusiveMinimum": 0
+            }
+          }
+        },
+        "reArm": {
+          "type": "string",
+          "enum": [
+            "AFTER_DEAL_CLOSED"
+          ]
+        }
+      }
+    },
+    "conditionGroup": {
+      "type": "object",
+      "required": [
+        "operator"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "operator": {
+          "type": "string",
+          "enum": [
+            "AND",
+            "OR",
+            "NOT"
+          ]
+        },
+        "list": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/conditionNode"
+          }
+        },
+        "conditions": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/conditionNode"
+          }
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "operator": {
+                "const": "NOT"
+              }
+            },
+            "required": [
+              "operator"
+            ]
+          },
+          "then": {
+            "anyOf": [
+              {
+                "properties": {
+                  "list": {
+                    "minItems": 1,
+                    "maxItems": 1
+                  }
+                },
+                "required": [
+                  "list"
+                ]
+              },
+              {
+                "properties": {
+                  "conditions": {
+                    "minItems": 1,
+                    "maxItems": 1
+                  }
+                },
+                "required": [
+                  "conditions"
+                ]
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "conditionNode": {
+      "oneOf": [
+        {
+          "$ref": "#/definitions/condition"
+        },
+        {
+          "$ref": "#/definitions/compare"
+        },
+        {
+          "$ref": "#/definitions/conditionGroup"
+        },
+        {
+          "$ref": "#/definitions/conditionRef"
+        },
+        {
+          "$ref": "#/definitions/latchNode"
+        }
+      ]
+    },
+    "latchNode": {
+      "type": "object",
+      "required": [
+        "latch"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "latch": {
+          "type": "object",
+          "required": [
+            "set",
+            "reset"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "set": {
+              "$ref": "#/definitions/conditionNode"
+            },
+            "reset": {
+              "$ref": "#/definitions/conditionNode"
+            },
+            "initial": {
+              "type": "boolean",
+              "default": false
+            }
+          }
+        }
+      }
+    },
+    "conditionRef": {
+      "type": "object",
+      "required": [
+        "ref"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "ref": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9_-]{1,32}$"
+        }
+      }
+    },
+    "compareOp": {
+      "type": "string",
+      "enum": [
+        "GT",
+        "LT",
+        "GTE",
+        "LTE",
+        "EQ",
+        "CROSS_UP",
+        "CROSS_DOWN",
+        "GT_PCT",
+        "LT_PCT",
+        "GTE_PCT",
+        "LTE_PCT"
+      ]
+    },
+    "lagWindow": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 500
+    },
+    "tolerancePct": {
+      "type": "number",
+      "exclusiveMinimum": 0
+    },
+    "timeframe": {
+      "type": "string",
+      "enum": [
+        "1m",
+        "5m",
+        "15m",
+        "1h",
+        "4h",
+        "1d",
+        "1w",
+        "1M"
+      ]
+    },
+    "symbol": {
+      "type": "string",
+      "pattern": "^[A-Z0-9]{2,20}$"
+    },
+    "offset": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 500,
+      "default": 0
+    },
+    "sourceRef": {
+      "type": "object",
+      "required": [
+        "indicator"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "indicator": {
+          "type": "string",
+          "minLength": 1
+        },
+        "field": {
+          "type": "string"
+        },
+        "params": {
+          "type": "object"
+        }
+      }
+    },
+    "source": {
+      "allOf": [
+        {
+          "$ref": "#/definitions/sourceRef"
+        }
+      ]
+    },
+    "indicatorRef": {
+      "type": "object",
+      "required": [
+        "indicator"
+      ],
+      "properties": {
+        "indicator": {
+          "type": "string",
+          "minLength": 1
+        },
+        "field": {
+          "type": "string"
+        },
+        "params": {
+          "type": "object"
+        },
+        "source": {
+          "$ref": "#/definitions/source"
+        },
+        "offset": {
+          "$ref": "#/definitions/offset"
+        },
+        "timeframe": {
+          "$ref": "#/definitions/timeframe"
+        },
+        "symbol": {
+          "$ref": "#/definitions/symbol"
+        }
+      }
+    },
+    "atrMult": {
+      "type": "number",
+      "exclusiveMinimum": 0
+    },
+    "atrRef": {
+      "allOf": [
+        {
+          "$ref": "#/definitions/indicatorRef"
+        }
+      ]
+    },
+    "rMult": {
+      "type": "number",
+      "exclusiveMinimum": 0
+    },
+    "sizing": {
+      "type": "object",
+      "required": [
+        "mode"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "mode": {
+          "type": "string",
+          "enum": [
+            "PCT_EQUITY",
+            "ABS",
+            "RISK_PCT",
+            "VOL_TARGET",
+            "RISK_ABS"
+          ]
+        },
+        "riskAbs": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        },
+        "multipliers": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "required": [
+              "when",
+              "factor"
+            ],
+            "additionalProperties": false,
+            "properties": {
+              "when": {
+                "$ref": "#/definitions/conditionNode"
+              },
+              "factor": {
+                "type": "number",
+                "exclusiveMinimum": 0
+              }
+            }
+          }
+        },
+        "factorClamp": {
+          "type": "array",
+          "minItems": 2,
+          "maxItems": 2,
+          "items": {
+            "type": "number",
+            "exclusiveMinimum": 0
+          }
+        },
+        "sizePct": {
+          "type": "number",
+          "exclusiveMinimum": 0,
+          "maximum": 100
+        },
+        "sizeAbs": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        },
+        "riskPct": {
+          "type": "number",
+          "exclusiveMinimum": 0,
+          "maximum": 100
+        },
+        "targetVolPct": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        },
+        "atrMult": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        },
+        "atrRef": {
+          "$ref": "#/definitions/atrRef"
+        },
+        "maxNotionalPct": {
+          "type": "number",
+          "exclusiveMinimum": 0,
+          "maximum": 12500
+        },
+        "maxNotionalAbs": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "mode": {
+                "const": "PCT_EQUITY"
+              }
+            },
+            "required": [
+              "mode"
+            ]
+          },
+          "then": {
+            "required": [
+              "sizePct"
+            ]
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "mode": {
+                "const": "ABS"
+              }
+            },
+            "required": [
+              "mode"
+            ]
+          },
+          "then": {
+            "required": [
+              "sizeAbs"
+            ]
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "mode": {
+                "const": "RISK_PCT"
+              }
+            },
+            "required": [
+              "mode"
+            ]
+          },
+          "then": {
+            "required": [
+              "riskPct"
+            ]
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "mode": {
+                "const": "VOL_TARGET"
+              }
+            },
+            "required": [
+              "mode"
+            ]
+          },
+          "then": {
+            "required": [
+              "targetVolPct",
+              "atrRef"
+            ]
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "mode": {
+                "const": "RISK_ABS"
+              }
+            },
+            "required": [
+              "mode"
+            ]
+          },
+          "then": {
+            "required": [
+              "riskAbs"
+            ]
+          }
+        },
+        {
+          "if": {
+            "required": [
+              "factorClamp"
+            ]
+          },
+          "then": {
+            "required": [
+              "multipliers"
+            ]
+          }
+        }
+      ]
+    },
+    "exitUnitExclusivity": {
+      "allOf": [
+        {
+          "not": {
+            "required": [
+              "takeProfitPct",
+              "takeProfitAtrMult"
+            ]
+          }
+        },
+        {
+          "not": {
+            "required": [
+              "takeProfitPct",
+              "takeProfitR"
+            ]
+          }
+        },
+        {
+          "not": {
+            "required": [
+              "takeProfitAtrMult",
+              "takeProfitR"
+            ]
+          }
+        },
+        {
+          "not": {
+            "required": [
+              "stopLossPct",
+              "stopLossAtrMult"
+            ]
+          }
+        },
+        {
+          "not": {
+            "required": [
+              "stopLossPct",
+              "stopLossRef"
+            ]
+          }
+        },
+        {
+          "not": {
+            "required": [
+              "stopLossPct",
+              "stopLosses"
+            ]
+          }
+        },
+        {
+          "not": {
+            "required": [
+              "stopLossAtrMult",
+              "stopLosses"
+            ]
+          }
+        },
+        {
+          "not": {
+            "required": [
+              "stopLossRef",
+              "stopLosses"
+            ]
+          }
+        },
+        {
+          "if": {
+            "required": [
+              "stopLosses"
+            ],
+            "properties": {
+              "stopLosses": {
+                "contains": {
+                  "required": [
+                    "atrMult"
+                  ]
+                }
+              }
+            }
+          },
+          "then": {
+            "required": [
+              "atrRef"
+            ]
+          }
+        },
+        {
+          "not": {
+            "required": [
+              "stopLossAtrMult",
+              "stopLossRef"
+            ]
+          }
+        },
+        {
+          "if": {
+            "required": [
+              "stopLossRefAtrBuffer"
+            ]
+          },
+          "then": {
+            "required": [
+              "stopLossRef",
+              "atrRef"
+            ]
+          }
+        },
+        {
+          "not": {
+            "required": [
+              "trailingStop"
+            ],
+            "properties": {
+              "trailingStop": {
+                "required": [
+                  "activateAfterPct",
+                  "activateAfterR"
+                ]
+              }
+            }
+          }
+        },
+        {
+          "not": {
+            "required": [
+              "takeProfits",
+              "takeProfitPct"
+            ]
+          }
+        },
+        {
+          "not": {
+            "required": [
+              "takeProfits",
+              "takeProfitAtrMult"
+            ]
+          }
+        },
+        {
+          "not": {
+            "required": [
+              "takeProfits",
+              "takeProfitR"
+            ]
+          }
+        },
+        {
+          "not": {
+            "required": [
+              "takeProfitRef",
+              "takeProfitPct"
+            ]
+          }
+        },
+        {
+          "not": {
+            "required": [
+              "takeProfitRef",
+              "takeProfitAtrMult"
+            ]
+          }
+        },
+        {
+          "not": {
+            "required": [
+              "takeProfitRef",
+              "takeProfitR"
+            ]
+          }
+        },
+        {
+          "not": {
+            "required": [
+              "takeProfitRef",
+              "takeProfits"
+            ]
+          }
+        },
+        {
+          "if": {
+            "required": [
+              "takeProfitRefAtrBuffer"
+            ]
+          },
+          "then": {
+            "required": [
+              "takeProfitRef",
+              "atrRef"
+            ]
+          }
+        },
+        {
+          "if": {
+            "required": [
+              "takeProfitRefDynamic"
+            ]
+          },
+          "then": {
+            "required": [
+              "takeProfitRef"
+            ]
+          }
+        },
+        {
+          "if": {
+            "anyOf": [
+              {
+                "required": [
+                  "takeProfitAtrMult"
+                ]
+              },
+              {
+                "required": [
+                  "stopLossAtrMult"
+                ]
+              }
+            ]
+          },
+          "then": {
+            "required": [
+              "atrRef"
+            ]
+          }
+        },
+        {
+          "if": {
+            "required": [
+              "takeProfits"
+            ],
+            "properties": {
+              "takeProfits": {
+                "contains": {
+                  "required": [
+                    "priceAtrMult"
+                  ]
+                }
+              }
+            }
+          },
+          "then": {
+            "required": [
+              "atrRef"
+            ]
+          }
+        },
+        {
+          "if": {
+            "required": [
+              "trailingStop"
+            ],
+            "properties": {
+              "trailingStop": {
+                "required": [
+                  "atrMult"
+                ]
+              }
+            }
+          },
+          "then": {
+            "required": [
+              "atrRef"
+            ]
+          }
+        }
+      ]
+    },
+    "pyramiding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "maxAdds"
+      ],
+      "properties": {
+        "onlyIfInProfit": {
+          "type": "boolean"
+        },
+        "minProfitR": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        },
+        "maxAdds": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "sizeScale": {
+          "type": "number",
+          "exclusiveMinimum": 0,
+          "maximum": 1
+        },
+        "moveStopToAvgEntry": {
+          "type": "boolean"
+        }
+      }
+    },
+    "partialSignals": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 10,
+      "items": {
+        "type": "object",
+        "required": [
+          "sizePct",
+          "signal"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9_-]{1,16}$"
+          },
+          "sizePct": {
+            "type": "number",
+            "exclusiveMinimum": 0,
+            "maximum": 100
+          },
+          "signal": {
+            "$ref": "#/definitions/conditionGroup"
+          }
+        }
+      }
+    },
+    "stopLosses": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 10,
+      "items": {
+        "type": "object",
+        "required": [
+          "sizePct"
+        ],
+        "additionalProperties": false,
+        "oneOf": [
+          {
+            "required": [
+              "pct"
+            ]
+          },
+          {
+            "required": [
+              "atrMult"
+            ]
+          }
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9_-]{1,16}$"
+          },
+          "pct": {
+            "type": "number",
+            "exclusiveMinimum": 0
+          },
+          "atrMult": {
+            "type": "number",
+            "exclusiveMinimum": 0
+          },
+          "sizePct": {
+            "type": "number",
+            "exclusiveMinimum": 0,
+            "maximum": 100
+          }
+        }
+      }
+    },
+    "takeProfits": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 10,
+      "items": {
+        "type": "object",
+        "required": [
+          "sizePct"
+        ],
+        "additionalProperties": false,
+        "oneOf": [
+          {
+            "required": [
+              "pricePct"
+            ]
+          },
+          {
+            "required": [
+              "priceAtrMult"
+            ]
+          },
+          {
+            "required": [
+              "priceR"
+            ]
+          },
+          {
+            "required": [
+              "priceRef"
+            ]
+          }
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9_-]{1,16}$"
+          },
+          "pricePct": {
+            "type": "number",
+            "exclusiveMinimum": 0
+          },
+          "priceAtrMult": {
+            "type": "number",
+            "exclusiveMinimum": 0
+          },
+          "priceR": {
+            "type": "number",
+            "exclusiveMinimum": 0
+          },
+          "priceRef": {
+            "oneOf": [
+              {
+                "$ref": "#/definitions/indicatorRef"
+              },
+              {
+                "$ref": "#/definitions/seriesRef"
+              }
+            ]
+          },
+          "sizePct": {
+            "type": "number",
+            "exclusiveMinimum": 0,
+            "maximum": 100
+          },
+          "moveStopToBreakEven": {
+            "type": "boolean"
+          }
+        }
+      }
+    },
+    "seriesRef": {
+      "type": "object",
+      "required": [
+        "series"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "series": {
+          "type": "string",
+          "pattern": "^[A-Za-z][A-Za-z0-9_]{0,31}$"
+        },
+        "offset": {
+          "$ref": "#/definitions/offset"
+        }
+      }
+    },
+    "seriesDef": {
+      "type": "object",
+      "required": [
+        "kind",
+        "when"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "kind": {
+          "type": "string",
+          "enum": [
+            "VALUEWHEN",
+            "BARSSINCE",
+            "COUNT"
+          ]
+        },
+        "when": {
+          "$ref": "#/definitions/conditionNode"
+        },
+        "take": {
+          "allOf": [
+            {
+              "$ref": "#/definitions/indicatorRef"
+            }
+          ]
+        },
+        "occurrence": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 50,
+          "default": 0
+        },
+        "window": {
+          "type": "integer",
+          "minimum": 2,
+          "maximum": 500
+        },
+        "minBars": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 500
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "kind": {
+                "const": "VALUEWHEN"
+              }
+            },
+            "required": [
+              "kind"
+            ]
+          },
+          "then": {
+            "required": [
+              "take"
+            ],
+            "not": {
+              "anyOf": [
+                {
+                  "required": [
+                    "window"
+                  ]
+                },
+                {
+                  "required": [
+                    "minBars"
+                  ]
+                }
+              ]
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "kind": {
+                "const": "BARSSINCE"
+              }
+            },
+            "required": [
+              "kind"
+            ]
+          },
+          "then": {
+            "not": {
+              "anyOf": [
+                {
+                  "required": [
+                    "take"
+                  ]
+                },
+                {
+                  "required": [
+                    "occurrence"
+                  ]
+                },
+                {
+                  "required": [
+                    "window"
+                  ]
+                },
+                {
+                  "required": [
+                    "minBars"
+                  ]
+                }
+              ]
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "kind": {
+                "const": "COUNT"
+              }
+            },
+            "required": [
+              "kind"
+            ]
+          },
+          "then": {
+            "required": [
+              "window"
+            ],
+            "not": {
+              "anyOf": [
+                {
+                  "required": [
+                    "take"
+                  ]
+                },
+                {
+                  "required": [
+                    "occurrence"
+                  ]
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    "anchorRef": {
+      "type": "object",
+      "required": [
+        "anchor",
+        "take"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "anchor": {
+          "type": "string",
+          "enum": [
+            "setup"
+          ]
+        },
+        "take": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        }
+      }
+    },
+    "stopLossRef": {
+      "oneOf": [
+        {
+          "$ref": "#/definitions/indicatorRef"
+        },
+        {
+          "$ref": "#/definitions/anchorRef"
+        },
+        {
+          "$ref": "#/definitions/seriesRef"
+        }
+      ]
+    },
+    "stopLossRefAtrBuffer": {
+      "type": "number",
+      "exclusiveMinimum": 0
+    },
+    "takeProfitRef": {
+      "oneOf": [
+        {
+          "$ref": "#/definitions/indicatorRef"
+        },
+        {
+          "$ref": "#/definitions/anchorRef"
+        },
+        {
+          "$ref": "#/definitions/seriesRef"
+        }
+      ]
+    },
+    "takeProfitRefAtrBuffer": {
+      "type": "number",
+      "exclusiveMinimum": 0
+    },
+    "takeProfitRefDynamic": {
+      "type": "boolean",
+      "default": false
+    },
+    "entryOrder": {
+      "type": "object",
+      "required": [
+        "type",
+        "priceRef",
+        "ttlBars"
+      ],
+      "additionalProperties": false,
+      "dependencies": {
+        "atrOffset": [
+          "atrRef"
+        ]
+      },
+      "not": {
+        "required": [
+          "atrOffset",
+          "offsetPct"
+        ]
+      },
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": [
+            "STOP",
+            "LIMIT"
+          ]
+        },
+        "priceRef": {
+          "oneOf": [
+            {
+              "$ref": "#/definitions/indicatorRef"
+            },
+            {
+              "$ref": "#/definitions/anchorRef"
+            },
+            {
+              "$ref": "#/definitions/seriesRef"
+            }
+          ]
+        },
+        "atrOffset": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        },
+        "offsetPct": {
+          "type": "number",
+          "exclusiveMinimum": 0,
+          "exclusiveMaximum": 100
+        },
+        "atrRef": {
+          "$ref": "#/definitions/atrRef"
+        },
+        "ttlBars": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 500
+        },
+        "cancelIf": {
+          "$ref": "#/definitions/conditionNode"
+        },
+        "fillRule": {
+          "type": "string",
+          "enum": [
+            "TRADE_THROUGH",
+            "TOUCH"
+          ],
+          "default": "TRADE_THROUGH"
+        },
+        "reservesSlot": {
+          "type": "boolean",
+          "default": true
+        }
+      }
+    },
+    "trailingTakeProfit": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "activationPct"
+      ],
+      "oneOf": [
+        {
+          "required": [
+            "callbackPct"
+          ]
+        },
+        {
+          "required": [
+            "callbackAtrMult"
+          ]
+        }
+      ],
+      "properties": {
+        "activationRef": {
+          "type": "string",
+          "enum": [
+            "AVG_ENTRY"
+          ],
+          "default": "AVG_ENTRY"
+        },
+        "activationPct": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        },
+        "callbackPct": {
+          "type": "number",
+          "exclusiveMinimum": 0,
+          "exclusiveMaximum": 100
+        },
+        "callbackAtrMult": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        }
+      }
+    },
+    "trailingStop": {
+      "type": "object",
+      "additionalProperties": false,
+      "anyOf": [
+        {
+          "required": [
+            "atrMult"
+          ]
+        },
+        {
+          "required": [
+            "indicatorRef"
+          ]
+        }
+      ],
+      "properties": {
+        "activateAfterPct": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        },
+        "activateAfterR": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        },
+        "atrMult": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        },
+        "indicatorRef": {
+          "allOf": [
+            {
+              "$ref": "#/definitions/indicatorRef"
+            }
+          ]
+        }
+      }
+    },
+    "breakEven": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "offsetPct": {
+          "type": "number",
+          "minimum": 0
+        },
+        "afterTp": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9_-]{1,16}$"
+        }
+      }
+    },
+    "condition": {
+      "type": "object",
+      "required": [
+        "op"
+      ],
+      "properties": {
+        "indicator": {
+          "type": "string",
+          "minLength": 1
+        },
+        "series": {
+          "type": "string",
+          "pattern": "^[A-Za-z][A-Za-z0-9_]{0,31}$"
+        },
+        "field": {
+          "type": "string"
+        },
+        "params": {
+          "type": "object"
+        },
+        "source": {
+          "$ref": "#/definitions/source"
+        },
+        "offset": {
+          "$ref": "#/definitions/offset"
+        },
+        "timeframe": {
+          "$ref": "#/definitions/timeframe"
+        },
+        "symbol": {
+          "$ref": "#/definitions/symbol"
+        },
+        "op": {
+          "type": "string",
+          "enum": [
+            "GT",
+            "LT",
+            "GTE",
+            "LTE",
+            "EQ",
+            "CROSS_UP",
+            "CROSS_DOWN",
+            "GT_PCT",
+            "LT_PCT",
+            "GTE_PCT",
+            "LTE_PCT",
+            "BETWEEN",
+            "OUTSIDE",
+            "RISING",
+            "FALLING"
+          ]
+        },
+        "value": {
+          "type": "number"
+        },
+        "value2": {
+          "type": "number"
+        },
+        "bars": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 500
+        },
+        "tolerancePct": {
+          "$ref": "#/definitions/tolerancePct"
+        },
+        "holdsFor": {
+          "$ref": "#/definitions/lagWindow"
+        },
+        "within": {
+          "$ref": "#/definitions/lagWindow"
+        },
+        "pct": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "op": {
+                "pattern": "_PCT$"
+              }
+            }
+          },
+          "then": {
+            "required": [
+              "pct"
+            ]
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "op": {
+                "enum": [
+                  "BETWEEN",
+                  "OUTSIDE"
+                ]
+              }
+            },
+            "required": [
+              "op"
+            ]
+          },
+          "then": {
+            "required": [
+              "value",
+              "value2"
+            ]
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "op": {
+                "enum": [
+                  "RISING",
+                  "FALLING"
+                ]
+              }
+            },
+            "required": [
+              "op"
+            ]
+          },
+          "then": {
+            "required": [
+              "bars"
+            ]
+          },
+          "else": {
+            "required": [
+              "value"
+            ]
+          }
+        },
+        {
+          "not": {
+            "required": [
+              "holdsFor",
+              "within"
+            ]
+          }
+        },
+        {
+          "oneOf": [
+            {
+              "required": [
+                "indicator"
+              ]
+            },
+            {
+              "required": [
+                "series"
+              ]
+            }
+          ]
+        },
+        {
+          "if": {
+            "required": [
+              "series"
+            ]
+          },
+          "then": {
+            "not": {
+              "anyOf": [
+                {
+                  "required": [
+                    "params"
+                  ]
+                },
+                {
+                  "required": [
+                    "field"
+                  ]
+                },
+                {
+                  "required": [
+                    "source"
+                  ]
+                },
+                {
+                  "required": [
+                    "timeframe"
+                  ]
+                },
+                {
+                  "required": [
+                    "symbol"
+                  ]
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    "compare": {
+      "type": "object",
+      "required": [
+        "left",
+        "op",
+        "right"
+      ],
+      "properties": {
+        "left": {
+          "oneOf": [
+            {
+              "$ref": "#/definitions/indicatorRef"
+            },
+            {
+              "$ref": "#/definitions/anchorRef"
+            },
+            {
+              "$ref": "#/definitions/seriesRef"
+            }
+          ]
+        },
+        "op": {
+          "type": "string",
+          "enum": [
+            "GT",
+            "LT",
+            "GTE",
+            "LTE",
+            "EQ",
+            "CROSS_UP",
+            "CROSS_DOWN",
+            "GT_PCT",
+            "LT_PCT",
+            "GTE_PCT",
+            "LTE_PCT"
+          ]
+        },
+        "right": {
+          "oneOf": [
+            {
+              "$ref": "#/definitions/indicatorRef"
+            },
+            {
+              "$ref": "#/definitions/anchorRef"
+            },
+            {
+              "$ref": "#/definitions/seriesRef"
+            }
+          ]
+        },
+        "tolerancePct": {
+          "$ref": "#/definitions/tolerancePct"
+        },
+        "holdsFor": {
+          "$ref": "#/definitions/lagWindow"
+        },
+        "within": {
+          "$ref": "#/definitions/lagWindow"
+        },
+        "pct": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "op": {
+                "pattern": "_PCT$"
+              }
+            }
+          },
+          "then": {
+            "required": [
+              "pct"
+            ]
+          }
+        },
+        {
+          "not": {
+            "required": [
+              "holdsFor",
+              "within"
+            ]
+          }
+        }
+      ]
+    }
+  }
+}

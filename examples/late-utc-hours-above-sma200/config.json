@@ -1,0 +1,64 @@
+{
+  "name": "Hold only 21:00–23:00 UTC above the 200-day SMA, 1h perp, maker fees",
+  "version": 1,
+  "market": {
+    "type": "futures",
+    "exchange": "binance",
+    "futures": {
+      "contractType": "USDT_M_PERP",
+      "leverage": 1,
+      "marginMode": "ISOLATED",
+      "applyFunding": true
+    }
+  },
+  "instrument": {
+    "symbol": "BTCUSDT",
+    "timeframe": "1h"
+  },
+  "sides": [
+    "LONG"
+  ],
+  "risk": {
+    "feesPct": 0.02,
+    "slippagePct": 0
+  },
+  "entries": [
+    {
+      "id": "late-utc",
+      "side": "LONG",
+      "sizePct": 99,
+      "conditions": {
+        "operator": "AND",
+        "list": [
+          {
+            "indicator": "TIME",
+            "params": {
+              "hour": 20
+            },
+            "op": "GT",
+            "value": 0
+          },
+          {
+            "left": {
+              "indicator": "CLOSE"
+            },
+            "op": "GT",
+            "right": {
+              "indicator": "SMA",
+              "params": {
+                "period": 200
+              },
+              "timeframe": "1d"
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "exit": {
+    "flatAtHourUtc": 22
+  },
+  "execution": {
+    "fillAt": "NEXT_OPEN"
+  }
+}

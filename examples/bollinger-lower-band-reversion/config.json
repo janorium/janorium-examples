@@ -1,0 +1,72 @@
+{
+  "name": "Bollinger 20/2 lower-band reversion to middle — article study",
+  "version": 1,
+  "market": {
+    "type": "spot",
+    "exchange": "binance"
+  },
+  "instrument": {
+    "symbol": "BTCUSDT",
+    "timeframe": "1d"
+  },
+  "sides": [
+    "LONG"
+  ],
+  "risk": {
+    "maxOpenPositions": 1,
+    "feesPct": 0.1,
+    "slippagePct": 0.05
+  },
+  "entries": [
+    {
+      "id": "long",
+      "side": "LONG",
+      "sizePct": 95,
+      "reArmOn": "ALL_LAYERS_CLOSED",
+      "conditions": {
+        "operator": "AND",
+        "list": [
+          {
+            "left": {
+              "indicator": "CLOSE"
+            },
+            "op": "CROSS_UP",
+            "right": {
+              "indicator": "BB",
+              "field": "lower",
+              "params": {
+                "period": 20,
+                "stdDev": 2
+              }
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "exit": {
+    "scope": "PER_POSITION",
+    "signal": {
+      "operator": "AND",
+      "list": [
+        {
+          "left": {
+            "indicator": "CLOSE"
+          },
+          "op": "GTE",
+          "right": {
+            "indicator": "BB",
+            "field": "middle",
+            "params": {
+              "period": 20,
+              "stdDev": 2
+            }
+          }
+        }
+      ]
+    }
+  },
+  "execution": {
+    "fillAt": "NEXT_OPEN"
+  }
+}

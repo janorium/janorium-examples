@@ -1,0 +1,57 @@
+{
+  "name": "DCA: 52 weekly buys, hold",
+  "version": 1,
+  "market": {
+    "type": "spot",
+    "exchange": "binance"
+  },
+  "instrument": {
+    "symbol": "BTCUSDT",
+    "timeframe": "1d"
+  },
+  "sides": [
+    "LONG"
+  ],
+  "risk": {
+    "maxOpenPositions": 52,
+    "feesPct": 0.1,
+    "slippagePct": 0.05
+  },
+  "entries": [
+    {
+      "id": "weekly-buy",
+      "side": "LONG",
+      "sizeAbs": 190,
+      "reArmOn": "ALWAYS",
+      "conditions": {
+        "operator": "AND",
+        "list": [
+          {
+            "indicator": "DAYOFWEEK",
+            "params": {
+              "day": 1
+            },
+            "op": "GT",
+            "value": 0
+          }
+        ]
+      }
+    }
+  ],
+  "exit": {
+    "scope": "PER_POSITION",
+    "signal": {
+      "operator": "AND",
+      "list": [
+        {
+          "indicator": "CLOSE",
+          "op": "LT",
+          "value": 0
+        }
+      ]
+    }
+  },
+  "execution": {
+    "fillAt": "NEXT_OPEN"
+  }
+}

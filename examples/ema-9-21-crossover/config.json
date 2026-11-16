@@ -1,0 +1,74 @@
+{
+  "name": "EMA 9/21 crossover, 4h — MA crossover study",
+  "version": 1,
+  "market": {
+    "type": "spot",
+    "exchange": "binance"
+  },
+  "instrument": {
+    "symbol": "BTCUSDT",
+    "timeframe": "4h"
+  },
+  "sides": [
+    "LONG"
+  ],
+  "risk": {
+    "maxOpenPositions": 1,
+    "feesPct": 0.1,
+    "slippagePct": 0.05
+  },
+  "entries": [
+    {
+      "id": "ema-9-21",
+      "side": "LONG",
+      "sizePct": 95,
+      "reArmOn": "ALL_LAYERS_CLOSED",
+      "conditions": {
+        "operator": "AND",
+        "list": [
+          {
+            "left": {
+              "indicator": "EMA",
+              "params": {
+                "period": 9
+              }
+            },
+            "op": "GT",
+            "right": {
+              "indicator": "EMA",
+              "params": {
+                "period": 21
+              }
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "exit": {
+    "scope": "PER_POSITION",
+    "signal": {
+      "operator": "AND",
+      "list": [
+        {
+          "left": {
+            "indicator": "EMA",
+            "params": {
+              "period": 9
+            }
+          },
+          "op": "LT",
+          "right": {
+            "indicator": "EMA",
+            "params": {
+              "period": 21
+            }
+          }
+        }
+      ]
+    }
+  },
+  "execution": {
+    "fillAt": "NEXT_OPEN"
+  }
+}

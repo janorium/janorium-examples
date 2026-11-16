@@ -1,0 +1,60 @@
+{
+  "name": "Long/short ratio fade: long when the crowd is most short (90-day bottom 10%), hold 7 days",
+  "version": 1,
+  "market": {
+    "type": "futures",
+    "exchange": "binance",
+    "futures": {
+      "contractType": "USDT_M_PERP",
+      "leverage": 1,
+      "marginMode": "ISOLATED",
+      "applyFunding": true
+    }
+  },
+  "instrument": {
+    "symbol": "BTCUSDT",
+    "timeframe": "4h"
+  },
+  "sides": [
+    "LONG"
+  ],
+  "risk": {
+    "maxOpenPositions": 1,
+    "feesPct": 0.05,
+    "slippagePct": 0.05
+  },
+  "entries": [
+    {
+      "id": "fade-crowded-shorts",
+      "side": "LONG",
+      "sizePct": 95,
+      "reArmOn": "THIS_LAYER_CLOSED",
+      "conditions": {
+        "operator": "AND",
+        "list": [
+          {
+            "indicator": "PCTRANK",
+            "params": {
+              "window": 540
+            },
+            "source": {
+              "indicator": "LSRATIO",
+              "params": {
+                "kind": "ACCOUNT"
+              }
+            },
+            "op": "LTE",
+            "value": 0.1
+          }
+        ]
+      }
+    }
+  ],
+  "exit": {
+    "scope": "PER_POSITION",
+    "maxHoldingBars": 42
+  },
+  "execution": {
+    "fillAt": "NEXT_OPEN"
+  }
+}

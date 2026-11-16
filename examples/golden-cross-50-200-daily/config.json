@@ -1,0 +1,84 @@
+{
+  "name": "Golden Cross 50/200 daily — top-20 study",
+  "version": 1,
+  "market": {
+    "type": "futures",
+    "exchange": "binance",
+    "futures": {
+      "contractType": "USDT_M_PERP",
+      "leverage": 1,
+      "marginMode": "ISOLATED",
+      "applyFunding": true
+    }
+  },
+  "instrument": {
+    "symbol": "BTCUSDT",
+    "timeframe": "4h"
+  },
+  "sides": [
+    "LONG"
+  ],
+  "risk": {
+    "maxOpenPositions": 1,
+    "feesPct": 0.05,
+    "slippagePct": 0.05
+  },
+  "entries": [
+    {
+      "id": "golden-cross",
+      "side": "LONG",
+      "sizePct": 95,
+      "reArmOn": "THIS_LAYER_CLOSED",
+      "conditions": {
+        "operator": "AND",
+        "list": [
+          {
+            "left": {
+              "indicator": "SMA",
+              "params": {
+                "period": 50
+              },
+              "timeframe": "1d"
+            },
+            "op": "GT",
+            "right": {
+              "indicator": "SMA",
+              "params": {
+                "period": 200
+              },
+              "timeframe": "1d"
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "exit": {
+    "scope": "PER_POSITION",
+    "signal": {
+      "operator": "AND",
+      "list": [
+        {
+          "left": {
+            "indicator": "SMA",
+            "params": {
+              "period": 50
+            },
+            "timeframe": "1d"
+          },
+          "op": "LT",
+          "right": {
+            "indicator": "SMA",
+            "params": {
+              "period": 200
+            },
+            "timeframe": "1d"
+          }
+        }
+      ]
+    }
+  },
+  "execution": {
+    "fillAt": "NEXT_OPEN"
+  }
+}

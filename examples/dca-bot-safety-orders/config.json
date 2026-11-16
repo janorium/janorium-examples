@@ -1,0 +1,148 @@
+{
+  "name": "DCA bot: base + 5 safety orders every -2%, x1.5, TP +2% — article study",
+  "version": 1,
+  "market": {
+    "type": "spot",
+    "exchange": "binance"
+  },
+  "instrument": {
+    "symbol": "BTCUSDT",
+    "timeframe": "1h"
+  },
+  "sides": [
+    "LONG"
+  ],
+  "risk": {
+    "maxOpenPositions": 6,
+    "maxOpenPositionsPerSide": 6,
+    "feesPct": 0.1,
+    "slippagePct": 0.05
+  },
+  "entries": [
+    {
+      "id": "base",
+      "side": "LONG",
+      "sizeAbs": 600,
+      "reArmOn": "THIS_LAYER_CLOSED",
+      "conditions": {
+        "operator": "AND",
+        "list": [
+          {
+            "indicator": "CLOSE",
+            "op": "GT",
+            "value": 0
+          }
+        ]
+      }
+    },
+    {
+      "id": "safety-1",
+      "side": "LONG",
+      "sizeAbs": 600,
+      "reArmOn": "THIS_LAYER_CLOSED",
+      "conditions": {
+        "operator": "AND",
+        "list": [
+          {
+            "left": {
+              "indicator": "CLOSE"
+            },
+            "op": "LT_PCT",
+            "right": {
+              "indicator": "LAST_FILL"
+            },
+            "pct": 2
+          }
+        ]
+      }
+    },
+    {
+      "id": "safety-2",
+      "side": "LONG",
+      "sizeAbs": 900,
+      "reArmOn": "THIS_LAYER_CLOSED",
+      "conditions": {
+        "operator": "AND",
+        "list": [
+          {
+            "left": {
+              "indicator": "CLOSE"
+            },
+            "op": "LT_PCT",
+            "right": {
+              "indicator": "LAST_FILL"
+            },
+            "pct": 2
+          }
+        ]
+      }
+    },
+    {
+      "id": "safety-3",
+      "side": "LONG",
+      "sizeAbs": 1350,
+      "reArmOn": "THIS_LAYER_CLOSED",
+      "conditions": {
+        "operator": "AND",
+        "list": [
+          {
+            "left": {
+              "indicator": "CLOSE"
+            },
+            "op": "LT_PCT",
+            "right": {
+              "indicator": "LAST_FILL"
+            },
+            "pct": 2
+          }
+        ]
+      }
+    },
+    {
+      "id": "safety-4",
+      "side": "LONG",
+      "sizeAbs": 2025,
+      "reArmOn": "THIS_LAYER_CLOSED",
+      "conditions": {
+        "operator": "AND",
+        "list": [
+          {
+            "left": {
+              "indicator": "CLOSE"
+            },
+            "op": "LT_PCT",
+            "right": {
+              "indicator": "LAST_FILL"
+            },
+            "pct": 2
+          }
+        ]
+      }
+    },
+    {
+      "id": "safety-5",
+      "side": "LONG",
+      "sizeAbs": 3037.5,
+      "reArmOn": "THIS_LAYER_CLOSED",
+      "conditions": {
+        "operator": "AND",
+        "list": [
+          {
+            "left": {
+              "indicator": "CLOSE"
+            },
+            "op": "LT_PCT",
+            "right": {
+              "indicator": "LAST_FILL"
+            },
+            "pct": 2
+          }
+        ]
+      }
+    }
+  ],
+  "exit": {
+    "scope": "AGGREGATE",
+    "takeProfitPct": 2
+  }
+}
