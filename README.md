@@ -62,11 +62,12 @@ guests.
   with your idea in plain words and it writes the config; the guide
   [Build a strategy with AI](https://janorium.com/guides/build-a-strategy-with-ai) shows the steps.
 
-## MCP server (coming soon)
+## MCP server
 
-`janorium-mcp` will let Claude Desktop, Claude Code, Cursor and other MCP clients validate, dry-run and backtest
-strategies on Janorium under your own API key, so an assistant answers with numbers from a real backtest. It is not
-on npm yet. [mcp/README.md](mcp/README.md) has the planned setup.
+[`janorium-mcp`](https://www.npmjs.com/package/janorium-mcp) lets Claude Desktop, Claude Code, Cursor and other MCP
+clients validate, dry-run and backtest strategies on Janorium under your own free API key, so an assistant answers
+with numbers from a real backtest. It is on npm and in the MCP Registry as `com.janorium/mcp`;
+[mcp/README.md](mcp/README.md) has the setup.
 
 ## How the backtests work
 
