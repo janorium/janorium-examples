@@ -13,7 +13,7 @@ import { registerStrategyTools } from './tools/strategy';
 import { registerWaitTool } from './tools/wait';
 
 /** Kept equal to package.json `version` and server.json (test/package.spec.ts, scripts/verify-dist.mjs). */
-export const SERVER_VERSION = '0.1.1';
+export const SERVER_VERSION = '0.1.2';
 
 export const INSTRUCTIONS = `Janorium (janorium.com), a crypto backtesting platform: strategies are declarative JSON configs run against Binance spot/USDT-M futures candles.
 Tools are built around the iteration loop, not the REST API: validate → save → dry-run → backtest → near-miss → robustness → optimise.

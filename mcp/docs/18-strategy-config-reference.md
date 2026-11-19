@@ -888,8 +888,8 @@ Formulas for the non-obvious ones:
   percentile of 200 bars and a percentile of 1000 bars are different features, and the engine must not serve the first
   while the report describes the second. Over the close it is dull; its reach is as a `source` holder —
   `PCTRANK_1000@ATR_14 GTE 0.9` is "volatility in its top decile **for this market**", a statement that survives a
-  change of price level where `ATR_14 GTE 420` does not. It is the form an Analog Lab box travels in
-  ([analogs/03-forward-paths-and-fan.md](analogs/03-forward-paths-and-fan.md) §3.7).
+  change of price level where `ATR_14 GTE 420` does not. It is the form an Analog Lab box travelled in
+  (the lab was retired 2026-11-19; [analogs/03-forward-paths-and-fan.md](analogs/03-forward-paths-and-fan.md) §3.7).
 - `STDDEV` = the **population** standard deviation of the `period` values ending at the bar,
   `sqrt(Σ(x − mean)² / period)` — the same σ `BB` multiplies, so `BB_20_2.upper − BB_20_2.middle = 2 × STDDEV_20`. It is
   in the units of its input (price, over the close), so it re-levels with the market. `ZSCORE = (x − SMA(x, period)) /

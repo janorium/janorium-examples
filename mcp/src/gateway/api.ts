@@ -163,7 +163,7 @@ export class PlatformApi {
     return this.http.post(`/optimizations/${seg(id)}/variants/${seg(variantIdx, 0)}/promote`, {});
   }
 
-  /* ── research and analogs ── */
+  /* ── research ── */
 
   researchScan(body: Record<string, unknown>): Promise<ResearchReport> {
     return this.http.post('/research/scan', body, { timeoutMs: SCAN_TIMEOUT_MS });
@@ -183,10 +183,6 @@ export class PlatformApi {
 
   draftFinding(runId: number, request: FindingDraftRequest): Promise<FindingDraftResponse> {
     return this.http.post(`/research/runs/${seg(runId)}/findings/draft`, request);
-  }
-
-  analogsQuery(body: Record<string, unknown>): Promise<unknown> {
-    return this.http.post('/analogs/query', body);
   }
 
   /* ── market data ── */

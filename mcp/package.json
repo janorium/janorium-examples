@@ -1,6 +1,6 @@
 {
   "name": "janorium-mcp",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "MCP server for Janorium, the free crypto backtesting platform: let Claude, Cursor or any MCP client validate, dry-run and backtest trading strategies on Binance spot and USDT-M futures history under your own API key.",
   "keywords": [
     "mcp",

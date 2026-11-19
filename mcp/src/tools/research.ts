@@ -2,9 +2,7 @@ import { randomUUID } from 'node:crypto';
 import type { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { z } from 'zod';
 import { hypothesesOf } from '../campaign/manager';
-import { ToolInputError } from '../gateway/errors';
-import { compactResearchReport, trimArrays } from '../summary/compact';
-import { toInstant, timeframeMs } from '../util/time';
+import { compactResearchReport } from '../summary/compact';
 import { ADDITIVE, READ_ONLY } from './annotations';
 import { researchJobSummary } from './builders';
 import type { ToolContext } from './context';
@@ -135,41 +133,6 @@ export function registerResearchTools(server: McpServer, ctx: ToolContext): void
         ctx.campaigns.guardRead('research_draft', { from: meta.from, to: meta.to }, meta.timeframe);
       }
       return ctx.api.draftFinding(runId, request);
-    }),
-  );
-
-  server.registerTool(
-    'analogs_query',
-    {
-      title: 'Analog Lab query',
-      description:
-        'POST /analogs/query per docs://analog-query-reference: the forward-return quantile fan of historical states like the anchor, the event study, the trade plan and flags. Long series are trimmed to their head. Inside a campaign the anchor must be {mode:"AT", ts} with ts + horizon before the locked region.',
-      inputSchema: { request: body.describe('AnalogQueryRequest (docs://analog-query-reference).') },
-      // Journaled by the platform and, inside a campaign, recorded as a check.
-      annotations: ADDITIVE,
-    },
-    handle(async ({ request }) => {
-      const campaign = ctx.campaigns.active();
-      if (!campaign) {
-        ctx.campaigns.guardLaunch({ tool: 'analogs_query', period: { from: '', to: '' }, timeframe: '', holdingBars: null });
-      } else {
-        const anchor = (request.anchor ?? {}) as { mode?: string; ts?: string };
-        if (anchor.mode !== 'AT' || !anchor.ts) {
-          throw new ToolInputError(
-            'ANCHOR_REQUIRED_IN_CAMPAIGN',
-            'Inside a campaign an analog query needs anchor {mode:"AT", ts} before the locked region: LATEST is the holdout, and its forward outcomes are what the holdout exists to hide.',
-          );
-        }
-        const timeframe = str(request.timeframe);
-        const horizon = typeof request.horizon === 'number' ? request.horizon : null;
-        const step = timeframeMs(timeframe) ?? 0;
-        // The episode whose forward window ends last is the anchor's own: ts + horizon bars.
-        const to = new Date(Date.parse(toInstant(anchor.ts)) + (horizon ?? 0) * step + 1).toISOString();
-        const history = ((request.history ?? {}) as { from?: string }).from ?? '2017-01-01T00:00:00Z';
-        ctx.campaigns.guardLaunch({ tool: 'analogs_query', period: { from: history, to }, timeframe, holdingBars: null });
-        ctx.campaigns.addCheck({ kind: 'ANALOG_QUERY', id: `analog-${randomUUID()}`, configHash: null, detail: { anchor: anchor.ts, timeframe, horizon } });
-      }
-      return trimArrays(await ctx.api.analogsQuery(request), 25);
     }),
   );
 }

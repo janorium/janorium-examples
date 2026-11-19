@@ -8,5 +8,4 @@ export const DOC_RESOURCES = [
   { name: 'strategy-config-reference', file: '18-strategy-config-reference.md', title: 'Strategy config reference' },
   { name: 'optimizer-run-reference', file: '19-optimizer-run-reference.md', title: 'Optimizer run reference' },
   { name: 'research-scan-reference', file: '20-research-scan-reference.md', title: 'Research scan reference' },
-  { name: 'analog-query-reference', file: '22-analog-query-reference.md', title: 'Analog query reference' },
 ] as const;

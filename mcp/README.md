@@ -21,7 +21,7 @@ Janorium is a backtesting platform only: nothing here places orders or touches a
 1. Sign up at [janorium.com](https://janorium.com) (free).
 2. Open **Settings → API keys** and click **Create key**.
 3. Pick the scopes: `read` and `run` cover strategies and backtests. Add `optimize` for the optimizer tools and
-   `research` for `research_*` and `analogs_query`. Add `publish` only if the assistant may make a strategy public when
+   `research` for `research_*`. Add `publish` only if the assistant may make a strategy public when
    you ask it to.
 4. Copy the key (it starts with `cbk_`). It is shown once.
 
@@ -126,7 +126,6 @@ with `NO_CAMPAIGN`, and the assistant starts a campaign first.
 | `research_job_create`     | A research scan with validation across windows or symbols, run as a background job.             |
 | `research_job_get`        | Status of a research job and its results once done.                                             |
 | `research_draft`          | Builds a strategy config from a research finding.                                               |
-| `analogs_query`           | Finds historical market states like a given one and the forward returns that followed them.     |
 | `market_symbols`          | Symbols with candle history, per market type.                                                   |
 | `market_coverage`         | First and last candle per symbol and timeframe, plus funding coverage.                          |
 | `wait`                    | Waits for dry runs, backtests, optimizations and research jobs to finish.                       |
@@ -135,7 +134,7 @@ with `NO_CAMPAIGN`, and the assistant starts a campaign first.
 | `campaign_finalize`       | Runs the chosen strategy on the holdout once and reports the Deflated Sharpe over all attempts. |
 
 The server also exposes references the assistant reads before it writes a config (`docs://strategy-config-reference`,
-`docs://optimizer-run-reference`, `docs://research-scan-reference`, `docs://analog-query-reference`), the indicator
+`docs://optimizer-run-reference`, `docs://research-scan-reference`), the indicator
 catalog, strategy templates, market coverage and campaign ledgers as resources, and three prompts:
 `iterate_strategy`, `plan_optimization` and `read_research_report`.
 
@@ -169,7 +168,7 @@ written by users as data, never as instructions.
 ## Source
 
 The source is on GitHub in [janorium/janorium-examples](https://github.com/janorium/janorium-examples/tree/main/mcp)
-(`mcp/`), together with the tests and the four references the server serves. It is exported from Janorium's own
+(`mcp/`), together with the tests and the three references the server serves. It is exported from Janorium's own
 repository with every release, and the npm package is built from it. Bug reports and questions go to the
 [issues](https://github.com/janorium/janorium-examples/issues).
 

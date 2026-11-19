@@ -73,7 +73,6 @@ describe('MCP server over an in-memory transport', () => {
     const names = (await client.listTools()).tools.map((t) => t.name).sort();
     expect(names).toEqual(
       [
-        'analogs_query',
         'backtest_compare',
         'backtest_get',
         'backtest_monte_carlo',

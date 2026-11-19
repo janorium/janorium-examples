@@ -268,7 +268,7 @@ export function compactTrades(page: Page<Trade>, filter: TradeFilter = {}) {
 }
 
 /**
- * For answers with no hand-written compact form (the analog response, a finding draft): arrays longer than `maxArray`
+ * For answers with no hand-written compact form (a finding draft, a signals trace): arrays longer than `maxArray`
  * keep their head, and each cut is listed in `_trimmed` so the reader knows the series was longer.
  */
 export function trimArrays(value: unknown, maxArray = 25): unknown {

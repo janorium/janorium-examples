@@ -35,7 +35,7 @@ export interface TrialRow {
 }
 
 export interface CheckRow {
-  kind: 'MONTE_CARLO' | 'ANALOG_QUERY';
+  kind: 'MONTE_CARLO';
   id: string;
   configHash: string | null;
   at: string;
